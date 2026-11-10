@@ -7,3 +7,45 @@ An assistive human-machine interaction (HMI) system designed for quadriplegic an
 ## 🛠 Project Architecture & Block Diagram
 
 The system is split into two primary operational units: the **Processing Unit (PC/Laptop)** and the **Embedded Control Unit (Wheelchair & Appliances)**.
+
++-----------------------------------------------------------------------+
+|                         PROCESSING UNIT (PC/Laptop)                  |
+|                                                                       |
+|   +-------------------+                     +---------------------+   |
+|   |  Eye-Tracking     | === (USB Feed) ===> | MATLAB Application  |   |
+|   |   CMOS Camera     |                     | (Gaze Detection)    |   |
+|   +-------------------+                     +----------+----------+   |
+|                                                        |              |
+|                                                        v              |
+|                                             +---------------------+   |
+|                                             |  Zigbee Transceiver |   |
+|                                             +----------+----------+   |
++--------------------------------------------------------|--------------+
+| (Wireless)
+v
++--------------------------------------------------------|--------------+
+|                         EMBEDDED CONTROL UNIT          |              |
+|                                                        v              |
+|                                             +---------------------+   |
+|                                             |  Zigbee Receiver    |   |
+|                                             +----------+----------+   |
+|                                                        |              |
+|                                                        v              |
+|                                             +---------------------+   |
+|                                             | PIC16F877A / 873A   |   |
+|                                             |   Microcontroller   |   |
+|                                             +----+-----------+----+   |
+|                                                  |           |        |
+|                         +------------------------+           +-----+  |
+|                         |                                          |  |
+|                         v                                          v  |
+|            +-------------------------+                 +-----------+  |
+|            | Motor Drivers & Relays  |                 | AC Devices|  |
+|            +------------+------------+                 | Control   |  |
+|                         |                              | (Relays)  |  |
+|             +-----------+-----------+                  +-----+-----+  |
+|             |                       |                        |        |
+|             v                       v                        v        |
+|      [ Left Wheel ]          [ Right Wheel ]       [ Light / Fan / AC ]|
++-----------------------------------------------------------------------+
+
