@@ -1,0 +1,56 @@
+---
+
+## 💡 How It Works
+
+1. **Video Acquisition:** A head-mounted or desk-mounted CMOS camera captures continuous video frames of the user's pupil area[cite: 35, 37].
+2. **Gaze Estimation (MATLAB):** 
+   - Gaussian smoothing and morphological operations filter the frame[cite: 14, 17].
+   - Connected components and bounding boxes locate the pupil centroid[cite: 14, 16, 17].
+   - The centroid distance vector is matched against calibration data to determine gaze direction (`UP`, `DWN`, `LFT`, `RGT`, `STRT`, `Closed`)[cite: 12, 13].
+3. **Wireless Transmission:** Commands (`U`, `D`, `L`, `R`, `S`) are serialized and sent over Zigbee (via MAX232 DB9 interface)[cite: 20, 21, 34, 35].
+4. **Actuation (PIC Microcontroller):** The microcontroller decodes the Zigbee frame and toggles output pins driving relays for the wheelchair motors or external AC appliances (Light, Fan, AC, Stepper Motor)[cite: 30, 35, 40].
+
+---
+
+## ⚡ Motor & Navigation Logic Table
+
+| Gaze Direction Signal | Serial Character | Left Motor Pin (`RB6`/`RB7`) | Right Motor Pin (`RB5`/`RB4`) | Wheelchair Movement |
+| :--- | :---: | :---: | :---: | :--- |
+| **UP** | `'U'` | ON | ON | Forward |
+| **DWN** | `'D'` | Reverse | Reverse | Reverse |
+| **LFT** | `'L'` | ON | OFF | Left Turn |
+| **RGT** | `'R'` | OFF | ON | Right Turn |
+| **Closed / Stop** | `'S'` | OFF | OFF | Full Stop |
+
+---
+
+## 📦 Directory Overview
+
+* **`matlab/`**: MATLAB GUI callbacks, calibration module, iris centroid calculation, and gaze vector mapping routines[cite: 2, 3, 11, 12, 14].
+* **`firmware/`**: PIC C code compiled using HI-TECH C compiler targetting `PIC16F877A` / `PIC16F873A`[cite: 19, 38].
+* **`docs/`**: Circuit schematics, power management layout, and structural block diagrams[cite: 30, 33, 34].
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* **MATLAB** (R2010b or newer) with Image Acquisition and Image Processing Toolboxes installed[cite: 2, 14, 27].
+* **HI-TECH C Compiler / MPLAB IDE** for PIC microcontroller code synthesis[cite: 19].
+* **Hardware:**
+  * PIC16F877A / PIC16F873A Microcontroller[cite: 30, 38]
+  * Zigbee Wireless Modules[cite: 27, 30]
+  * MAX232 Transceiver IC & RS232-to-USB Converter[cite: 34, 35]
+  * USB CMOS Web Camera[cite: 30, 37]
+  * 12V DC Motors & Relay Driver Module (ULN2803)[cite: 33, 38]
+
+### Setup & Run
+
+1. **Hardware Assembly:** Connect the wireless camera to the host PC and set up the PIC hardware board with the Zigbee module connected to USART RX/TX pins (RC6/RC7)[cite: 23, 30, 35].
+2. **Flash Microcontroller:** Open `firmware/main.c` in MPLAB IDE, compile with HI-TECH C, and program the PIC16F877A chip[cite: 19, 30].
+3. **Run MATLAB GUI:**
+   ```matlab
+   cd matlab/
+   open GUI.fig
+   % Start the acquisition callback from the GUI
